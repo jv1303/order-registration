@@ -84,8 +84,10 @@ int addOrder(int index, Order *ordPointer, Item *item, long unsigned int itemLen
     return 1;
 };
 
-int addItem(int index, Item *item) {
+int registerItem(int index, Item *item) {
     char code[1000];
+    float value = 0;
+    char name[50];
     
     printf("======= Item registration ======\n");
     printf("!! The item code must have 6 characters !!\n");
@@ -107,45 +109,52 @@ int addItem(int index, Item *item) {
         return 0;
     }
     
+    for (int i = 0; i <= index; i++) {
+        if (strcmp(item[i].code, code) == 0) {
+            system("clear");
+            printf("======= Item registration ======\n");
+            printf("Item code already exists. Please, try again.\n");
+            return 0;
+        }
+    }
+    
+    printf("Type the item name: ");
+    fgets(name, 50, stdin);
+    
+    len = strlen(name);
+        if (len > 0 && name[len - 1] == '\n') {
+            name[len - 1] = '\0';
+    }
+    
+    if (strlen(code) > 50) {
+        system("clear");
+        printf("======= Item registration ======\n");
+        printf("Name too long! Please, try again.\n");
+        return 0;
+    }
+    
+    printf("Type the value per unit: ");
+    
+    int valueReturn = scanf("%f", &value);
+    getchar();
+    
+    if (!valueReturn || value <= 0) {
+        system("clear");
+        printf("======= Item registration ======\n");
+        printf("The item value must be a positive number. Please, try again.\n");
+        return 0;
+    }
+    
     strcpy(item[index].code, code);
+    strcpy(item[index].name, name);
+    item[index].value = value;
 
+    system("clear");
+    printf("======= Item registration ======\n");
+    printf("Item registered successfully!\n");
     return 1;
 }
 
-int addItem1(int index, Item *item) {
-    char code[7];  // 6 characters + null terminator
-
-    printf("======= Item registration ======\n");
-    printf("!! The item code must have 6 characters !!\n");
-    printf("!!       and cannot be duplicated       !!\n");
-
-    printf("Type the new item code: ");
-    if (fgets(code, sizeof(code), stdin) == NULL) {
-        printf("Error reading input.\n");
-        return 0;  // Error case
-    }
-
-    // Remove newline if it exists
-    size_t len = strlen(code);
-    if (len > 0 && code[len - 1] == '\n') {
-        code[len - 1] = '\0';  // Replace newline with null terminator
-    } else {
-        // If there's no newline, input was too long, so clear the input buffer
-        int ch;
-        while ((ch = getchar()) != '\n' && ch != EOF);
-        
-        printf("Invalid input! The code must be exactly 6 characters long.\n");
-        return 0;  // Indicate failure
-    }
-
-    // Ensure input is exactly 6 characters long
-    if (strlen(code) != 6) {
-        printf("Invalid input! The code must be exactly 6 characters long.\n");
-        return 0;
-    }
-
-    return 1;  // Success
-}
 
 void registerMenu(int *orderCount, Order **order, Item **item, int *itemCount) {
     int input;
@@ -168,10 +177,13 @@ void registerMenu(int *orderCount, Order **order, Item **item, int *itemCount) {
                     *order = (Order *) realloc(*order, (*orderCount + 1) * sizeof(Order));
                     funcReturn = addOrder(ord, *order, *item, itm);
                     *orderCount += funcReturn;
+                    ord = *orderCount;
                 break;
             case 2:
                     *item = (Item *) realloc(*item, (*itemCount + 1) * sizeof(Item));
-                    funcReturn = addItem(itm, *item);
+                    funcReturn = registerItem(itm, *item);
+                    *itemCount += funcReturn;
+                    itm = *itemCount;
                 break;
             case 3:
                 break;
@@ -179,6 +191,58 @@ void registerMenu(int *orderCount, Order **order, Item **item, int *itemCount) {
                 break;
         }
     } while (input != 3);
+}
+
+int addItems(int itemLen, Item **itemPointer) {
+    Item *item = *itemPointer;
+    char fkItemCode[7];
+    int itemFound = 0;
+    int itemIndex;
+    
+    printf("========== Add Items ===========\n");
+    printf("Type the item code: ");
+    
+    fgets(fkItemCode, 7, stdin);
+    
+    if (fkItemCode[strlen(fkItemCode) - 1] != '\n') {
+        int c;
+        while ((c = getchar()) != '\n' && c != EOF);
+    }
+    
+    for (int i = 0; i <= itemLen; i++) {
+        if (strcmp(item[i].code, fkItemCode) == 0) {
+            itemFound = 1;
+            itemIndex = i;
+            break;
+        }
+    }
+    
+    if (!itemFound) {
+        system("clear");
+        printf("========== Add Items ===========\n");
+        printf("Item code is invalid. Please, try again.\n");
+        return 0;
+    }
+    
+    int amount;
+    printf("Item: %s\n Available: %d\n", item[itemIndex].name, item[itemIndex].available);
+    printf("Type how many items are being added to the storage: ");
+    int scanfReturn = (scanf("%d", &amount));
+    getchar();
+    
+    if (!scanfReturn || amount <= 0) {
+        system("clear");
+        printf("========== Add Items ===========\n");
+        printf("You must enter a positive integer. Operation failed.\n");
+        return 0;
+    }
+    
+    item[itemIndex].available += amount;
+    
+    system("clear");
+    printf("========== Add Items ===========\n");
+    printf("Success!\n");
+    return 1;
 }
 
 int main()
@@ -209,7 +273,8 @@ int main()
         printf("============= Menu =============\n");
         printf("Choose an option:\n");
         printf("1. Register\n");
-        printf("2. Quit\n");
+        printf("2. Add items\n");
+        printf("3. Quit\n");
         scanf("%d", &input);
         getchar();
         system("clear");
@@ -219,13 +284,16 @@ int main()
                 registerMenu(pOrdCount, &order, &item, pItmCount);
                 break;
             case 2:
+                addItems(itemCount, &item);
+                break;
+            case 3:
                 break;
             default:
                 break;
         }
-    } while (input != 2);
+    } while (input != 3);
     
-    for (int i = 0; i < 2; i++) {
+    for (int i = 0; i < itemCount; i++) {
         printf("\nCodigo: %s\nItem: %s\nValor: %.2f\nEstoque: %d\n", item[i].code, item[i].name, item[i].value, item[i].available);
     }
     
@@ -240,7 +308,6 @@ int main()
     
     return 0;
 }
-
 
 
 
