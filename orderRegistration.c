@@ -155,6 +155,59 @@ int registerItem(int index, Item *item) {
     return 1;
 }
 
+int addItems(int itemLen, Item **itemPointer) {
+    Item *item = *itemPointer;
+    char fkItemCode[7];
+    int itemFound = 0;
+    int itemIndex;
+    
+    printf("========== Add Items ===========\n");
+    printf("Type the item code: ");
+    
+    fgets(fkItemCode, 7, stdin);
+    
+    if (fkItemCode[strlen(fkItemCode) - 1] != '\n') {
+        int c;
+        while ((c = getchar()) != '\n' && c != EOF);
+    }
+    
+    for (int i = 0; i <= itemLen; i++) {
+        if (strcmp(item[i].code, fkItemCode) == 0) {
+            itemFound = 1;
+            itemIndex = i;
+            break;
+        }
+    }
+    
+    if (!itemFound) {
+        system("clear");
+        printf("========== Add Items ===========\n");
+        printf("Item code is invalid. Please, try again.\n");
+        return 0;
+    }
+    
+    int amount;
+    system("clear");
+    printf("========== Add Items ===========\n");
+    printf("Item: %s\nAvailable: %d\n", item[itemIndex].name, item[itemIndex].available);
+    printf("Type how many items are being added to the storage: ");
+    int scanfReturn = (scanf("%d", &amount));
+    getchar();
+    
+    if (!scanfReturn || amount <= 0) {
+        system("clear");
+        printf("========== Add Items ===========\n");
+        printf("You must enter a positive integer. Operation failed.\n");
+        return 0;
+    }
+    
+    item[itemIndex].available += amount;
+    
+    system("clear");
+    printf("========== Add Items ===========\n");
+    printf("Success!\n");
+    return 1;
+}
 
 void registerMenu(int *orderCount, Order **order, Item **item, int *itemCount) {
     int input;
@@ -193,56 +246,56 @@ void registerMenu(int *orderCount, Order **order, Item **item, int *itemCount) {
     } while (input != 3);
 }
 
-int addItems(int itemLen, Item **itemPointer) {
-    Item *item = *itemPointer;
-    char fkItemCode[7];
-    int itemFound = 0;
-    int itemIndex;
-    
-    printf("========== Add Items ===========\n");
-    printf("Type the item code: ");
-    
-    fgets(fkItemCode, 7, stdin);
-    
-    if (fkItemCode[strlen(fkItemCode) - 1] != '\n') {
-        int c;
-        while ((c = getchar()) != '\n' && c != EOF);
+void viewOrder(int orderCount, Order *order) {
+    printf("========= Registered Orders ==========\n");
+    printf("%-8s %-8s %-8s %-12s\n\n", "Id", "Item", "Amount", "Total");
+    for (int i = 0; i < orderCount; i++) {
+        printf("%-8d %-8s %-8d $%-12.2f\n", order[i].id, order[i].itemCode, order[i].quantity, order[i].orderTotal);
     }
-    
-    for (int i = 0; i <= itemLen; i++) {
-        if (strcmp(item[i].code, fkItemCode) == 0) {
-            itemFound = 1;
-            itemIndex = i;
-            break;
-        }
-    }
-    
-    if (!itemFound) {
-        system("clear");
-        printf("========== Add Items ===========\n");
-        printf("Item code is invalid. Please, try again.\n");
-        return 0;
-    }
-    
-    int amount;
-    printf("Item: %s\n Available: %d\n", item[itemIndex].name, item[itemIndex].available);
-    printf("Type how many items are being added to the storage: ");
-    int scanfReturn = (scanf("%d", &amount));
+    printf("\nPress ENTER to continue...");
     getchar();
-    
-    if (!scanfReturn || amount <= 0) {
-        system("clear");
-        printf("========== Add Items ===========\n");
-        printf("You must enter a positive integer. Operation failed.\n");
-        return 0;
-    }
-    
-    item[itemIndex].available += amount;
-    
     system("clear");
-    printf("========== Add Items ===========\n");
-    printf("Success!\n");
-    return 1;
+}
+
+void viewItem(int itemCount, Item *item) {
+    printf("=================== Registered Items ===================\n");
+    printf("%-8s %-25s %-10s %-6s\n\n", "Code", "Item", "Value", "Available");
+    for (int i = 0; i < itemCount; i++) {
+        printf("%-8s %-25s $%-10.2f %-6d\n", item[i].code, item[i].name, item[i].value, item[i].available);
+    }
+    printf("\nPress ENTER to continue...");
+    getchar();
+    system("clear");
+}
+
+void consultMenu(int *orderCount, Order **order, Item **item, int *itemCount) {
+    int input;
+    int ord = *orderCount;
+    int itm = *itemCount;
+    
+    do {
+        printf("============= Menu =============\n");
+        printf("Choose an option:\n");
+        printf("1. View orders\n");
+        printf("2. View Items\n");
+        printf("3. Back\n");
+        scanf("%d", &input);
+        getchar();
+        system("clear");
+        
+       switch (input) {
+            case 1:
+                    viewOrder(ord, *order);
+                break;
+            case 2:
+                    viewItem(itm, *item);
+                break;
+            case 3:
+                break;
+            default:
+                break;
+        }
+    } while (input != 3);
 }
 
 int main()
@@ -251,8 +304,7 @@ int main()
     item = (Item *) malloc(2 * sizeof(Item));
     int itemCount = 0;
     int *pItmCount = &itemCount;
-    //Item *item = item;
-    
+
     //strcpy(item[0].code, "ST0001");
     //strcpy(item[0].name, "Blue Shirt");
     //item[0].value = 32.99;
@@ -274,7 +326,8 @@ int main()
         printf("Choose an option:\n");
         printf("1. Register\n");
         printf("2. Add items\n");
-        printf("3. Quit\n");
+        printf("3. Consult\n");
+        printf("4. Quit\n");
         scanf("%d", &input);
         getchar();
         system("clear");
@@ -287,27 +340,19 @@ int main()
                 addItems(itemCount, &item);
                 break;
             case 3:
+                consultMenu(pOrdCount, &order, &item, pItmCount);
+                break;
+            case 4:
                 break;
             default:
                 break;
         }
-    } while (input != 3);
-    
-    for (int i = 0; i < itemCount; i++) {
-        printf("\nCodigo: %s\nItem: %s\nValor: %.2f\nEstoque: %d\n", item[i].code, item[i].name, item[i].value, item[i].available);
-    }
-    
-    for (int i = 0; i < orderCount; i++) {
-        printf("\nId: %d\nItem: %s\nQuantidade: %d\nValor total: %.2f\n", order[i].id, order[i].itemCode, order[i].quantity, order[i].orderTotal);
-    }
-    
-    return 0;
+    } while (input != 4);
+
+    printf("System finished.");
     
     free(order);
     free(item);
     
     return 0;
 }
-
-
-
