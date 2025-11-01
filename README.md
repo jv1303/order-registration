@@ -50,7 +50,7 @@ typedef struct {
 } Order;
 ```
 
-### ✅ Validações Essenciais
+### Validações Essenciais
 
 Para garantir integridade, diversas validações são feitas automaticamente:
 
