@@ -34,23 +34,25 @@ O sistema oferece as seguintes operações:
 
 O sistema segue uma arquitetura simples, baseada em vetores e structs:
 
-```c
-typedef struct {
-    char code[7];
-    char name[50];
-    float value;
-    int available;
-} Item;
-```
-
-```c
-typedef struct {
-    int unsigned id;
-    char itemCode[7];
-    int unsigned quantity;
-    float orderTotal;
-} Order;
-```
+<div style="display: flex;">
+    ```c
+    typedef struct {
+        char code[7];
+        char name[50];
+        float value;
+        int available;
+    } Item;
+    ```
+    
+    ```c
+    typedef struct {
+        int unsigned id;
+        char itemCode[7];
+        int unsigned quantity;
+        float orderTotal;
+    } Order;
+    ```
+</div>
 
 ### ✅ Validações Essenciais
 
