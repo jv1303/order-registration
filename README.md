@@ -35,3 +35,26 @@ O sistema oferece as seguintes operações:
 O sistema segue uma arquitetura simples, baseada em vetores e structs:
 
 <img>
+
+### ✅ Validações Essenciais
+
+Para garantir integridade, diversas validações são feitas automaticamente:
+
+<table border="#002 1px solid">
+  <tr>
+    <th>Ação</th>
+    <th>Validação</th>
+  </tr>
+  <tr>
+    <td>Cadastro de item</td>
+    <td>Verifica duplicidade de código</td>
+  </tr>
+  <tr>
+    <td>Entrada de estoque</td>
+    <td>Confere existência do item</td>
+  </tr>
+  <tr>
+    <td>Criação de pedido</td>
+    <td>Valida item + estoque disponível</td>
+  </tr>
+</table>
