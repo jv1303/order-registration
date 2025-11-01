@@ -8,20 +8,20 @@ Um sistema em linguagem C para gerenciamento de **itens**, **estoque** e **pedid
 
 O sistema oferece as seguintes operações:
 
-✅ **Cadastro de Itens**  
+#### Cadastro de Itens
 - Permite adicionar novos itens ao catálogo  
 - Armazena código, descrição e preço unitário  
 
-📦 **Entrada de Estoque**  
+#### Entrada de Estoque
 - Atualiza a quantidade disponível de itens  
 - Controla e registra novos recebimentos  
 
-🧾 **Cadastro de Pedidos**  
+#### Cadastro de Pedidos
 - Cria pedidos de venda  
 - Valida se o item existe e se há estoque disponível  
 - Atualiza automaticamente o saldo do estoque ao efetivar o pedido  
 
-🔍 **Listagem e Consultas**  
+#### Listagem e Consultas 
 - Lista todos os itens cadastrados  
 - Lista todos os pedidos realizados  
 - Permite busca por código de item ou pedido  
