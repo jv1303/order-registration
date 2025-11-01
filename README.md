@@ -34,8 +34,6 @@ O sistema oferece as seguintes operações:
 
 O sistema segue uma arquitetura simples, baseada em vetores e structs:
 
-<div style="display: flex;">
-
 ```c
 typedef struct {
     char code[7];
@@ -53,7 +51,6 @@ typedef struct {
     float orderTotal;
 } Order;
 ```
-</div>
 
 ### ✅ Validações Essenciais
 
