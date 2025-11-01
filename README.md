@@ -1,4 +1,4 @@
-# Order Registration
+# Cadastro de Pedidos de Venda em C
 
 Um sistema em linguagem C para gerenciamento de **itens**, **estoque** e **pedidos de venda**, com funcionalidades de cadastro, consulta e controle de disponibilidade de produtos.
 
